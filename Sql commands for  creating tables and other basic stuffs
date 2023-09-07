@@ -40,8 +40,8 @@ update customer
 set "Name" = 'Jam', "Age" = 32
 where "ID" = 4
 
--- as noticed since we created the table with "" in column names, we have to put the "" every time we sepcify the problem
--- to fix this we can create a table as given below
+-- As noticed, since we created the table with "" in column names, we have to put the "" every time we sepcify the problem
+-- To fix this we can create a table as given below
 create table customer1
 (ID int8 PRIMARY KEY,
  Name VARCHAR(50) NOT NULL,
@@ -65,8 +65,172 @@ set name = 'raven', age = 1245
 where id = 4;
 
 
---delete values
+--Delete values
 --delete from table_name where condition
 
 delete from customer1
 where id = 3;
+
+---- to update tables
+-- set the details you want to change, then select the column name
+
+update customer1
+set name = 'jai', age = 32
+where id = 4
+
+-- to delete values
+
+delete from customer1
+where id = 4
+
+--alter table, to add, delete, or modify columns
+--There are three examples here
+-- add i.e. alter table table_name
+-- Add column name
+-- drop/delete column, i.e. alter table
+-- drop column column_name
+-- and lastly, modify
+-- alter table_name
+-- alter column column name data type
+-- to change name of column we use
+-- alter table table_name
+change
+--
+alter table customer1
+add column sex varchar(50)
+
+--
+alter table customer1
+drop column sex
+
+
+---
+-- select statement is used to select database, the name thing to remember here is
+-- * = all, distinct = provides unique field.
+
+
+select distinct age 
+from customer1 
+
+-- next is the where clause
+-- where will specify
+
+select *
+from customer1
+where age = 42
+
+
+-- operators in SQL
+
+--arithematric= addition, substraction, multiplication etc
+--comparision operators: used for compareision eg, equal, not equal
+-- logical operators to perfrom boolean operations eg all, in, between, like, and, or, not, any
+-- bitwise: perrom bit operations eg. Bitwise AND (&), Bitwise OR()
+
+
+SELECT * FROM customer1
+where age = 42
+and name = 'Jam'
+
+--another frequently used commands are the limit, and order by
+
+select *
+from customer1
+order by name desc limit 2
+--
+
+
+--next is importing csv
+--create table with headers as same as excel
+create table customer
+(customer_id int8, frist_name varchar(50), last_name varchar(50), email varchar(100), address_id int8)
+
+-- to copy csv file
+copy customer(customer_id, frist_name, last_name, email, address_id)
+from 'D:\Statistics\port porfilio\sql tutorail\customer.csv'
+Delimiter ','
+csv header
+
+-- next is functions in sql
+-- functions are database objects that contains a set of sql statements to perfom specific task
+--eg system defined functions.
+-- eg of this is rand(), round(), upper(), lower(), sum(), max()etc
+-- frequetnyl used functions are
+/*• UPPER() converts the value of a field to uppercase
+• LOWER() converts the value of a field to lowercase
+• LENGTH() returns the length of the value in a text field
+• SUBSTRING() extracts a substring from a string
+• NOW() returns the current system date and time
+• FORMAT() used to set the format of a field
+• CONCAT() adds two or more strings together
+• REPLACE() Replaces all occurrences of a substring within a string, with a new substring
+• TRIM() removes leading and trailing spaces (or other specified characters) from a string*/
+-- for more check https://www.postgresql.org/docs/9.1/functions-string.html
+
+--another is user defined, once you define a function, you can call them again
+
+-- 
+--
+-- to check functions
+-- first is upper, 
+
+select * from customer
+--
+select upper(frist_name) from customer
+--
+select length(frist_name) from customer
+--
+
+-- we noticed that name of the frist is typo, therefore
+
+ALTER TABLE customer
+RENAME COLUMN "frist_name" TO "first_name";
+-- now we define first_name as varchar(50)
+ALTER TABLE customer
+ALTER COLUMN "first_name" TYPE VARCHAR(50);
+
+--
+
+
+
+-- to show the first 3 letters of the name we can use substring function
+select substring(first_name, 1,3), first_name from customer
+
+--
+select substring(first_name, 2,4), first_name from customer
+
+-- concat is for joining
+--
+select CONCAT(first_name, last_name), first_name, last_name
+from customer
+
+--replace, we will change all mary into mohan in the first_name column
+
+select replace (first_name, 'Mary', 'Mohan')
+from customer
+
+-- trim used alot of data cleaning
+-- to remove space for example in extra space in first_name
+-- we will use a combination of right and left in this exmplae
+-- basically from the right and left we will remove one each
+-
+SELECT RIGHT(first_name, LENGTH(first_name) - 1)  AS trimmed_first_name, first_name, last_name
+FROM customer;
+
+select left(first_name, length(first_name) -1)AS trimmed_first_name, first_name, last_name
+FROM customer;
+
+-- or a combination of both
+
+SELECT RIGHT(LEFT(first_name, LENGTH(first_name) - 1), LENGTH(first_name) - 2) AS trimmed_first_name, first_name, last_name
+FROM customer;
+
+
+select * from customer
+
+
+
+
+
+
+
