@@ -1,0 +1,72 @@
+--SQL TUTORIAL--
+--CREATE TABLE with constraints such as not null, primary key(which is unique to the table)
+
+--
+
+create table customer
+("ID" int8 PRIMARY KEY,
+ "Name" VARCHAR(50) NOT NULL,
+ "Age" int NOT NULL,
+ "City" char(50),
+ "salary" numeric
+	);
+	
+--now insert data
+--string data do require ''
+insert into customer
+(ID, Name, Age, City, salary)
+values
+(1, 'Sam', 26, 'Delhi', 9000),
+(2, 'Ram', 19, 'Bangalore', 11000),
+(3, 'Pam', 31, 'Mumbai', 6000),
+(4, 'Jam', 42, 'Pune', 10000);
+-- this create error, as in, it will not the table column names, to fix this
+
+--
+INSERT INTO customer ("ID", "Name", "Age", "City", "salary")
+VALUES
+(1, 'Sam', 26, 'Delhi', 9000),
+(2, 'Ram', 19, 'Bangalore', 11000),
+(3, 'Pam', 31, 'Mumbai', 6000),
+(4, 'Jam', 42, 'Pune', 10000);
+-- so basically, you have to input the column name as entered during data creation
+
+
+--update table
+
+--let us update tbale no 4
+
+update customer
+set "Name" = 'Jam', "Age" = 32
+where "ID" = 4
+
+-- as noticed since we created the table with "" in column names, we have to put the "" every time we sepcify the problem
+-- to fix this we can create a table as given below
+create table customer1
+(ID int8 PRIMARY KEY,
+ Name VARCHAR(50) NOT NULL,
+ Age int NOT NULL,
+ City char(50),
+ salary numeric
+	);
+
+--followed by 
+INSERT INTO customer1 (id, name, age, city, salary)
+VALUES
+(1, 'Sam', 26, 'Delhi', 9000),
+(2, 'Ram', 19, 'Bangalore', 11000),
+(3, 'Pam', 31, 'Mumbai', 6000),
+(4, 'Jam', 42, 'Pune', 10000);
+
+select * from customer1;
+
+update customer1
+set name = 'raven', age = 1245
+where id = 4;
+
+
+--delete values
+--delete from table_name where condition
+
+delete from customer1
+where id = 3;
