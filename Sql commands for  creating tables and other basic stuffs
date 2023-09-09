@@ -627,6 +627,23 @@ where amount > (select avg(amount) from payment1)
 
 --this is an example of nested query
 
+select * from customer
+---
+select customer_id from customer
+-- this will create list of customer, therefore
+
+select customer_id, amount, mode
+from payment
+where customer_id IN (select customer_id from customer)
+
+---
+select first_name, last_name
+from customer c
+where exists (select customer_id, amount
+from payment p
+where p.customer_id = c.customer_id
+and amount >60 )
+
 
 
 
