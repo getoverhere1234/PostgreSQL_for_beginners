@@ -369,6 +369,122 @@ select extract(DATE from payment_date) as pay_dow, payment_date
 from payment
 ---
 
+-- JOIN--
+/* A JOIN clause is used to combine data from two or 
+more tables, based on a related column between 
+them
+
+INNER JOIN
+• Returns records that have 
+matching values in both 
+tables
+
+• Syntax
+SELECT column_name(s) 
+FROM TableA
+INNER JOIN TableB
+ON TableA.col_name = TableB.col_name
+
+IT IS CRITICAL THAT THE NAME OF COLUMNS IN BOTH TABLES MUST BE IDENTIFCAL
+ALSO IT DOESNT MATTER WHICH TABLE YOU BRING IN FIRST
+
+
+
+
+• Example
+
+SELECT *
+FROM customer AS c
+INNER JOIN payment AS p
+ON c.customer_id = p.customer_id
+
+
+LEFT JOIN
+• Returns all records from the 
+left table, and the matched 
+records from the right table
+
+LEFT JOIN
+• Syntax
+SELECT column_name(s) 
+FROM TableA
+LEFT JOIN TableB
+ON TableA.col_name = TableB.col_name
+• Example
+SELECT *
+FROM customer AS c
+LEFT JOIN payment AS p
+ON c.customer_id = p.customer_id
+
+
+RIGHT JOIN
+• Returns all records from the 
+right table, and the matched 
+records from the left table
+
+RIGHT JOIN
+• Syntax
+SELECT column_name(s) 
+FROM TableA
+RIGHT JOIN TableB
+ON TableA.col_name = TableB.col_name
+• Example
+SELECT *
+FROM customer AS c
+RIGHT JOIN payment AS p
+ON c.customer_id = p.customer_id
+
+FULL JOIN
+• Returns all records when 
+there is a match in either left 
+or right table
+
+FULL JOIN
+• Syntax
+SELECT column_name(s) 
+FROM TableA
+FULL OUTER JOIN TableB
+ON TableA.col_name = TableB.col_name
+• Example
+SELECT *
+FROM customer AS c
+FULL OUTER JOIN payment AS p
+ON c.customer_id = p.customer_id
+
+
+Which JOIN To Use
+• INNER JOIN: Returns records that have matching values in both tables
+• LEFT JOIN: Returns all records from the left table, and the matched 
+records from the right table
+• RIGHT JOIN: Returns all records from the right table, and the matched 
+records from the left table
+• FULL JOIN: Returns all records when there is a match in either left or 
+right tablE
+--
+
+--  */
+
+-- inner join example, most used example of join
+
+select c.first_name, p.amount, p.mode
+from customer as c
+inner join payment as p
+on c.customer_id = p.customer_id
+
+
+--left join, another frequently used join, where all left table will be retained, but only those that macth left column will be retained from right table
+-- whichever table you select fisrt becomes your left table
+
+select *
+from customer as c
+left join payment as p
+on c.customer_id = p.customer_id
+
+
+
+
+
+
 
 
 
