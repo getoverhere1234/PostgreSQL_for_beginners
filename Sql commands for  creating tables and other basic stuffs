@@ -228,6 +228,147 @@ FROM customer;
 
 select * from customer
 
+-- aggregate functions
+-- these includes SUM, MAX etc
+
+--the count function gives the number of rows
+
+select count(salary) from customer1
+
+-- this is very good to check nulll values
+-- for eg, we can check if the salary column has the same no of rows as rest of columns in customer1
+select count(*) from customer1
+
+--SUM function adds value
+select sum(salary) from customer1
+
+--max gives maximum value, while min gives minimum value
+
+select max(salary) from customer1
+
+--average can be observed by avg value
+select avg(amount) from payment
+-- we observe here that the valaue obtained is 48.000000........
+--pro tip, if we put round beofre round function we can cut determine the no of digit
+
+select round(avg(amount), 2) from payment
+-- the two specifies the amount of decimals that returns, here it is 2, i.e 48.00
+
+
+-- next is the group by statement
+-- group by groups rows that have same values into summary rows,
+-- it is fotne used with aggregate functions such as count, max, etc
+/* syntas
+	select column_names
+	from table_name
+	group by column_name
+
+	example is
+	 
+	select mode, sum(amount) as total
+	from payment
+	group by mode */
+
+select mode, sum(amount) as total
+from payment
+group by mode
+
+-- a reminder that we have to use group by after aggregate functions are used
+-- we can reorder the following by
+
+select mode, sum(amount) as total
+from payment
+group by mode
+order by total asc
+
+-- how to know which column to chose in the query?
+-- first tip is select the column that contain groupings for eg 
+--under one column, many rwos consiting of different groups such as A, B C, D
+--this enables them to be grouped
+-- if all the column values are unqiue, they cannot be grouped.
+
+
+--HAVING clause, this is filter on the result of GROUP BY based on conditions
+-- the WHERE clause places conditions on selected columns
+-- whereas, HAVING clause places on conditons created by group by
+/* syntax
+
+ select column_names
+ from table_names
+ where condition
+ group by column_name
+ having condition
+ 
+ 
+ */
+ 
+ select mode, count(amount) as total
+ from payment
+ group by mode
+ having count(amount) >= 3
+ order by total desc 
+
+
+- we can also make mulitple condition in having, for example
+
+ select mode, count(amount) as total
+ from payment
+ group by mode
+ having count(amount) >= 3 and count(amount) < 4
+ order by total desc 
+
+--
+--
+--TIMESTAMP DATA TYPE, containing both date and time parts
+-- time contains ony time  
+-- date contians date
+-- year contains only year
+--time stamps conatins date and time
+-- timestamptz contains date, time and time zone
+
+-- TIMESTAMP fucntions/operatiors
+-- show timezone
+-- select now()
+-- selct timeofday()
+-- select current_time
+-- select current_date
+-- we use such functions to know when creating new database
+
+show timezone
+
+ select now()
+select timeofday()
+select current_time
+select current_date
+
+--VERY IMPORTNT
+EXTRACT Function
+--The EXTRACT() function extracts a part from a given date value.
+--Syntax: SELECT EXTRACT(MONTH FROM date_field) FROM Table
+--• YEAR
+--• QUARTER 
+--• MONTH
+--• WEEK
+-- DAY
+-- HOUR
+-- MINUTE
+--DOW – day of week
+--DOY – day of year
+
+--example
+
+SELECT EXTRACT(MONTH FROM payment_date) as payment_month, payment_date
+from payment
+
+--
+select extract(DOW from payment_date) as pay_dow, payment_date
+from payment
+
+---
+select extract(DATE from payment_date) as pay_dow, payment_date
+from payment
+---
+
 
 
 
