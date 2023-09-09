@@ -558,6 +558,83 @@ SELECT cust_name, cust_amount from custB
 */
 
 
+---------
+--subquery
+/* SUB QUERY
+A Subquery or Inner query or a Nested query allows us to 
+create complex query on the output of another query
+• Sub query syntax involves two SELECT statements 
+
+• Syntax
+
+SELECT column_name(s)
+FROM table_name
+WHERE column_name operator 
+( SELECT column_name FROM table_name WHERE ... ); */
+--
+-- find the details of customers whose payment amount is more than avergae of total amount paid by all customer
+-- q1 find the avergae amount
+-- q2 filter the customers whos amount> average
+CREATE TABLE payment1 (
+    customer_id bigint,
+    amount bigint,
+    mode varchar(50),
+    payment_date date);
+	
+INSERT INTO payment1 (customer_id, amount, mode, payment_date)
+VALUES
+    (1, 60.00, 'Cash', '2020-09-24'),
+    (2, 30.00, 'Credit Card', '2020-04-27'),
+    (3, 90.00, 'Credit Card', '2020-07-07'),
+    (4, 50.00, 'Debit Card', '2020-12-02'),
+    (5, 40.00, 'Mobile Payment', '2020-11-20'),
+    (6, 40.00, 'Debit Card', '2021-06-28'),
+    (7, 10.00, 'Cash', '2021-08-25'),
+    (8, 30.00, 'Mobile Payment', '2021-06-17'),
+    (9, 80.00, 'Cash', '2021-08-25'),
+    (10, 50.00, 'Mobile Payment', '2021-03-11'),
+    (11, 70.00, 'Cash', '2022-01-11'),
+    (12, 60.00, 'Netbanking', '2022-09-11'),
+    (13, 30.00, 'Netbanking', '2022-10-12'),
+    (14, 50.00, 'Credit Card', '2022-05-14'),
+    (15, 30.00, 'Credit Card', '2022-09-25');
+	
+INSERT INTO payment1 (customer_id, amount, mode, payment_date)
+VALUES
+    (1, 60.00, 'Cash', '2020-09-24'),
+    (10, 70.00, 'Mobile Payment', '2021-02-28'),
+    (11, 80.00, 'Cash', '2021-03-01'),
+    (2, 500.00, 'Credit Card', '2020-04-27'),
+    (8, 100.00, 'Cash', '2021-01-26');
+
+---
+select * from payment1
+
+--find avg amount
+select avg(amount) from payment1
+-- filter customer data filter > than avg
+
+select *
+from payment1
+where amount > 76.50
+
+-- to make this query dynamic, i.e to update it self automatically once new values are inserted we use the following
+
+
+select *
+from payment1
+where amount > (select avg(amount) from payment1)
+
+--this is an example of nested query
+
+
+
+
+
+
+
+
+
 
 
 
