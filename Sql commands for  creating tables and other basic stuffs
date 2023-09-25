@@ -746,7 +746,71 @@ statement.
 • The WITH clause can include one or more CTEs separated
 by commas
 
+---
+Common Table Expression (CTE)
+• Syntax
+WITH my_cte AS (
+SELECT a,b,c
+FROM Table1 )
+SELECT a,c
+FROM my_cte
+CTE query
+Main query
+The name of this CTE is my_cte, and the CTE query is SELECT a,b,c FROM Table1. The CTE starts
+with the WITH keyword, after which you specify the name of your CTE, then the content of the
+query in parentheses. The main query comes after the closing parenthesis and refers to the
+CTE. Here, the main query (also known as the outer query) is SELECT a,c FROM my_cte
 
+---
+1. Example EASY
+WITH my_cte AS (
+SELECT *, AVG(amount) OVER(ORDER BY
+p.customer_id) AS "Average_Price",
+COUNT(address_id) OVER(ORDER BY
+c.customer_id) AS "Count"
+FROM payment as p
+INNER JOIN customer AS c
+ON p.customer_id = c.customer_id
+)
+SELECT first_name, last_name
+FROM my_cte
+
+-----
+
+1. Example Multiple CTEs
+WITH my_cp AS (
+SELECT *, AVG(amount) OVER(ORDER BY p.customer_id)
+AS "Average_Price",
+COUNT(address_id) OVER(ORDER BY c.customer_id) AS
+"Count"
+FROM payment as p
+INNER JOIN customer AS c
+ON p.customer_id = c.customer_id
+),
+my_ca AS (
+SELECT *
+FROM customer as c
+INNER JOIN address AS a
+ON a.address_id = c.address_id
+INNER JOIN country as cc
+ON cc.city_id = a.city_id
+)
+SELECT cp.first_name, cp.last_name, ca.city, ca.country, cp.amount
+FROM my_ca as ca , my_cp as cp
+
+---
+2. Example Advance
+WITH my_cte AS (
+SELECT mode, MAX(amount) AS highest_price,
+SUM(amount) AS total_price
+FROM payment
+GROUP BY mode
+)
+SELECT payment.*, my.highest_price, my.total_price
+FROM payment
+JOIN my_cte my
+ON payment.mode = my.mode
+ORDER BY payment.mode
 
 
 
