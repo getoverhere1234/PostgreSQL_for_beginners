@@ -667,6 +667,89 @@ This is optional and does not have to be specified
 • ROWS can be used if we want to further limit the rows within our
 partition. This is optional and usually not used
 
+WINDOW FUNCTION TYPES
+There is no official division of the SQL window functions into
+categories but high level we can divide into three types
+
+Aggregate		
+• SUM
+• AVG
+• COUNT
+• MIN
+• MAX
+
+
+Ranking
+• ROW_NUMBER
+• RANK
+• DENSE_RANK
+• PERCENT_RANK
+
+
+Value/Analytic
+• LEAD
+• LAG
+• FIRST_VALUE
+• LAST_VALUE
+-----------------------------------------------------------------
+---CASE Expression
+• The CASE expression goes through conditions and returns
+a value when the first condition is met (like if-then-else
+statement). If no conditions are true, it returns the value
+in the ELSE clause.
+• If there is no ELSE part and no conditions are true, it
+returns NULL.
+• Also called CASE STATEMENT----
+
+--• General CASE Syntax
+CASE
+WHEN condition1 THEN result1
+WHEN condition2 THEN result2
+WHEN conditionN THEN resultN
+ELSE other_result
+END;---
+
+
+SELECT customer_id, amount,
+CASE
+WHEN amount > 100 THEN 'Expensive product'
+WHEN amount = 100 THEN 'Moderate product'
+ELSE 'Inexpensive product'
+END AS ProductStatus
+FROM payment
+
+----CASE Expression Syntax
+• CASE Expression Syntax
+CASE Expression
+WHEN value1 THEN result1
+WHEN value2 THEN result2
+WHEN valueN THEN resultN
+ELSE other_result
+END;
+
+--• Example:
+SELECT customer_id,
+CASE amount
+WHEN 500 THEN 'Prime Customer'
+WHEN 100 THEN 'Plus Customer'
+ELSE 'Regular Customer'
+END AS CustomerStatus
+FROM payment
+
+-------------------Common Table Expression (CTE)
+• A common table expression, or CTE, is a temporary
+named result set created from a simple SELECT statement
+that can be used in a subsequent SELECT statement
+• We can define CTEs by adding a WITH clause directly
+before SELECT, INSERT, UPDATE, DELETE, or MERGE
+statement.
+• The WITH clause can include one or more CTEs separated
+by commas
+
+
+
+
+
 
 
 
