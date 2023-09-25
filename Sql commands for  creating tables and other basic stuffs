@@ -308,6 +308,7 @@ order by total asc
  having count(amount) >= 3
  order by total desc 
 
+-----the having count(amount) >= 3 indicate that entry of amount should be more than 3
 
 - we can also make mulitple condition in having, for example
 
@@ -472,8 +473,8 @@ inner join payment as p
 on c.customer_id = p.customer_id
 
 
---left join, another frequently used join, where all left table will be retained, but only those that macth left column will be retained from right table
--- whichever table you select fisrt becomes your left table
+--left join, another frequently used join, where all left tables will be retained, but only those that macth left column will be retained from right table
+-- whichever table you select first becomes your left table
 
 select *
 from customer as c
@@ -495,7 +496,7 @@ JOIN Table AS T2
 ON T1.col_name = T2.col_name
 
 
--- this is very useful to compare rows value within same table */
+-- This is very useful for comparing rows value within the same table */
 
 CREATE TABLE emp
 (empid bigint, empname varchar(50), manager_id bigint)
@@ -529,7 +530,7 @@ The SQL UNION clause/operator is used to combine/concatenate the results
 of two or more SELECT statements without returning any duplicate rows and 
 keeps unique records
 To use this UNION clause, each SELECT statement must have
-• The same number of columns selected and expressions
+• The exact number of columns selected and expressions
 • The same data type and
 • Have them in the same order
 • Syntax
@@ -573,8 +574,8 @@ WHERE column_name operator
 ( SELECT column_name FROM table_name WHERE ... ); */
 --
 -- find the details of customers whose payment amount is more than avergae of total amount paid by all customer
--- q1 find the avergae amount
--- q2 filter the customers whos amount> average
+-- q1 find the average amount
+-- q2 filter the customer's whose amount> average
 CREATE TABLE payment1 (
     customer_id bigint,
     amount bigint,
@@ -618,7 +619,7 @@ select *
 from payment1
 where amount > 76.50
 
--- to make this query dynamic, i.e to update it self automatically once new values are inserted we use the following
+-- to make this query dynamic, i.e to update itself automatically once new values are inserted we use the following
 
 
 select *
@@ -643,6 +644,32 @@ where exists (select customer_id, amount
 from payment p
 where p.customer_id = c.customer_id
 and amount >60 )
+
+
+--WINDOWS FUNCTION
+--This is used for complex query
+/Window functions applies aggregate, ranking and analytic functions
+over a particular window (set of rows).
+• And OVER clause is used with window functions to define that
+window./
+
+Let’s look at some definitions:
+• Window function applies aggregate, ranking and analytic functions
+over a particular window; for example, sum, avg, or row_number
+• Expression is the name of the column that we want the window
+function operated on. This may not be necessary depending on what
+window function is used
+• OVER is just to signify that this is a window function
+• PARTITION BY divides the rows into partitions so we can specify which
+rows to use to compute the window function
+• ORDER BY is used so that we can order the rows within each partition.
+This is optional and does not have to be specified
+• ROWS can be used if we want to further limit the rows within our
+partition. This is optional and usually not used
+
+
+
+
 
 
 
