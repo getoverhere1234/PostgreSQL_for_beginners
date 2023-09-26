@@ -7,19 +7,19 @@ add column sex varchar(1)
 
 NOW TO FILL THIS DATA WITH APPROPRIATE GENDER, WE USE THE FOLLOWING FOR MALES AND FEMALES AND OTHERS RESPECTIVELY
 
-update into customer(sex)
+update customer
 set sex = 'M'
 where customer_id IN (1,2,3,4)
 
 -----
 
-update into customer(sex)
+update customer
 set sex = 'F'
 where customer_id = (6,7,8)
 
 --
 
-update into customer(sex)
+update customer
 set sex = 'o'
 where customer_id = (9,10,11)
 
