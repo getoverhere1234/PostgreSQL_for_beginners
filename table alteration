@@ -1,0 +1,30 @@
+--TIPS OF TABLE ALTERATION--
+
+TO ADD A COLUMN CALLED SEX IN OUR PREVIOUS CUSTOMER TABLTE, WE USE THE COMMAND
+
+alter table customer
+add column sex varchar(1)
+
+NOW TO FILL THIS DATA WITH APPROPRIATE GENDER, WE USE THE FOLLOWING FOR MALES AND FEMALES AND OTHERS RESPECTIVELY
+
+update into customer(sex)
+set sex = 'M'
+where customer_id IN (1,2,3,4)
+
+-----
+
+update into customer(sex)
+set sex = 'F'
+where customer_id = (6,7,8)
+
+--
+
+update into customer(sex)
+set sex = 'o'
+where customer_id = (9,10,11)
+
+------- TO UPDATE THE NAMES SOLEY,
+
+update customer
+set first_nmae = 'ssss', last_name = 'sssss'
+where customer_Id = 1
