@@ -1,0 +1,51 @@
+SELECT * FROM emp
+
+alter table emp
+add column salary int
+
+update emp
+set salary = 100
+where empid = 1
+
+update emp
+set salary = 200
+where empid = 2
+
+update emp
+set salary = 300
+where empid = 3
+
+update emp
+set salary = 400
+where empid = 4
+
+
+-- Q.1 fetch employees who earn more than avg salary of all employes
+-- to do this we can easily do the following
+select *
+from emp e
+where e.salary > average_salary
+
+--howver this will result in error, because there is no average_salary column
+-- to do this we can use a with clause
+--sql query can start with WITH clause, alwyas before select
+
+WITH average_salary (avg_sal) as
+	( select avg (salary) from emp)
+select *
+from emp e, average_salary av
+where e.salary > av.avg_sal
+
+--- we can limit the number of decimals in the avg_sal by using cast functions
+
+WITH average_salary (avg_sal) as
+	( select cast (avg (salary) as int) from emp)
+select *
+from emp e, average_salary av
+where e.salary > av.avg_sal
+---------------------------------------------------
+--- Q2. 
+
+SELECT * FROM emp
+
+
