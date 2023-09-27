@@ -46,6 +46,111 @@ where e.salary > av.avg_sal
 ---------------------------------------------------
 --- Q2. 
 
-SELECT * FROM emp
+create table sales (store_id int, store_name varchar(50), product varchar(50), quantity int, cost int)
+---
+
+select * from sales
+-- Inserting 20 random entries into the "sales" table
+INSERT INTO sales (store_Id, store_name, product, quantity, cost)
+VALUES
+    (1, 'Apple Original 1', 'iPhone', 5, 3000),
+    (2, 'Apple Original 2', 'MacBook', 8, 4500),
+    (3, 'Apple Original 3', 'iPhone', 2, 2000),
+    (4, 'Apple Original 4', 'MacBook', 4, 3500),
+    (5, 'Apple Original 5', 'iPhone', 7, 4000),
+    (6, 'Apple Original 6', 'MacBook', 3, 3000),
+    (7, 'Apple Original 7', 'iPhone', 9, 5000),
+    (8, 'Apple Original 8', 'MacBook', 6, 4200),
+    (9, 'Apple Original 9', 'iPhone', 10, 4800),
+    (10, 'Apple Original 10', 'MacBook', 1, 1000),
+    (1, 'Apple Original 1', 'MacBook', 2, 2200),
+    (2, 'Apple Original 2', 'iPhone', 4, 3800),
+    (3, 'Apple Original 3', 'MacBook', 6, 4200),
+    (4, 'Apple Original 4', 'iPhone', 3, 2700),
+    (5, 'Apple Original 5', 'MacBook', 7, 4900),
+    (6, 'Apple Original 6', 'iPhone', 8, 4400),
+    (7, 'Apple Original 7', 'MacBook', 5, 3500),
+    (8, 'Apple Original 8', 'iPhone', 1, 1200),
+    (9, 'Apple Original 9', 'MacBook', 10, 5000),
+    (10, 'Apple Original 10', 'iPhone', 9, 4800);
+	
+	--- find stores whose sales where better than avegare sales across all stores
+	-- break down the question
+	-- 1. total sales per each store -- total_sales
+	
+	
+	--2. find avg sales with respect to all the stores -- - avg,sales
+	
+	--3 find the stores where total_sales > avg_sales of all stores
+	
+
+-- q.1 first step is achived by
+select s.store_id, sum(cost) as total_sales_per_store
+from sales s
+group by s.store_id
+
+
+
+-- q.2 second step is
+select avg(total_sales_per_store)
+from 
+	(select s.store_id, sum(cost) as total_sales_per_store
+	from sales s
+	group by s.store_id) x
+	
+ 	-- to remove extra decimal
+	select cast(avg(total_sales_per_store) as int) as avg_sales_for_all_stores
+	from 
+		(select s.store_id, sum(cost) as total_sales_per_store
+		from sales s
+		group by s.store_id) x
+
+-- q3 
+
+select * 
+from (select s.store_id, sum(cost) as total_sales_per_store
+		from sales s
+		group by s.store_id) total_sales
+join (select cast(avg(total_sales_per_store) as int) as avg_sales_for_all_stores
+	from 
+		(select s.store_id, sum(cost) as total_sales_per_store
+		from sales s
+		group by s.store_id) x) avg_sales
+	on total_sales.total_sales_per_store > avg_sales.avg_sales_for_all_stores;
+	
+	
+--porblem with this query is 
+-- too messy
+-- query within a query
+-- multiple same query affecting performances
+-- with clause can help in this case
+
+-- q3 can now be rewritten as
+
+WITH total_sales (store_id, total_sales_per_store) as
+	(select s.store_id, sum(cost) as total_sales_per_store
+	from sales s
+	group by s.store_id), 
+avg_sales (avg_sales_for_all_stores) as
+	(select cast(avg(total_sales_per_store) as int) as avg_sales_for_all_stores
+	from total_sales)
+	
+
+WITH total_sales (store_id, total_sales_per_store) as
+    (SELECT s.store_id, SUM(cost) as total_sales_per_store
+     FROM sales s
+     GROUP BY s.store_id), 
+avg_sales (avg_sales_for_all_stores) as
+    (SELECT CAST(AVG(total_sales_per_store) AS INT) as avg_sales_for_all_stores
+     FROM total_sales)
+select 
+from total_sales ts
+join avg_sales av
+on ts.total_sales_per_store > av.avg_sales_for_all_stores;
+
+
+
+
+
 
 
