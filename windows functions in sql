@@ -1,0 +1,237 @@
+select * from customer
+
+update customer
+set sales = 100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500
+where customer_id in (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
+
+--this doesnt work-- so we use a CTE here--
+
+UPDATE customer AS c
+SET sales = s.new_sales
+FROM (
+    SELECT customer_id, new_sales
+    FROM (
+        VALUES
+            (1, 100),
+            (2, 200),
+            (3, 300),
+            (4, 400),
+            (5, 500),
+            (6, 600),
+            (7, 700),
+            (8, 800),
+            (9, 900),
+            (10, 1000),
+            (11, 1100),
+            (12, 1200),
+            (13, 1300),
+            (14, 1400),
+            (15, 1500)
+    ) AS sales_updates(customer_id, new_sales)
+) AS s
+WHERE c.customer_id = s.customer_id;
+/*We create a subquery that generates a temporary table (aliased as 's') called 'sales_updates'. This table contains two columns: 'customer_id' and 'new_sales'. It uses the VALUES clause to define a list of tuples, each containing a 'customer_id' and the corresponding new 'sales' value.
+We then join the 'customer' table with this subquery based on the 'customer_id' column:his WHERE clause ensures that we only update the 'sales' column for rows where the 'customer_id' matches between the 'customer' table (aliased as 'c') and the 'sales_updates' subquery (aliased as 's').
+Finally, we perform the update by setting the 'sales' column in the 'customer' table to the 'new_sales' value from the subquery:
+So, the code effectively updates the 'sales' column in the 'customer' table for the specified 'customer_id' values with the corresponding new 'sales' values provided in the subquery. This approach simplifies the code by avoiding the need for multiple CASE statements and provides a more concise way to update the values.*/
+
+--windows function a practical guide
+select customer_id, sum(sales)
+from customer
+group by customer_id
+
+---
+select sum(sales) over (partition by customer_id)
+from customer
+
+select * from customer
+
+select customer_id, avg(sales) over (partition by customer_id)
+from customer
+
+select *, sum(sales) over (partition by sales)
+from customer
+
+
+select *, sum(sales) over (partition by sales order by customer_id) from customer
+
+
+
+---Rank fucntions--
+
+/*Here are some of the most important window functions in PostgreSQL:
+
+RANK(): returns the rank of each row within a set of rows. The rank is determined by the order of the rows in the set. Rank 1 would be the first row. Tied rows receive the same rank, which can lead to gaps.
+DENSE_RANK(): similar to RANK(), but it does not skip any ranks if there are ties in the values of the rows. For example, if two rows have the same value and are ordered as the first and second rows, their ranks will be 1 and 1 and the next will receive 2, not 1 and 1 and 3 as it would be the case with RANK().
+ROW_NUMBER(): returns a unique, number for each row in the set. The first row is assigned a row number of 1, the second row is assigned a row number of 2, and so on.
+NTILE(): divides the rows into a specified number of groups, or “tiles” and assigns a tile number to each row. For example, if you specify NTILE(3) and have 9 rows in the set, the first 3 rows will be assigned a tile number of 1, the next 3 rows will be assigned a tile number of 2, and the final 3 rows will be assigned a tile number of 3. This function can be used to calculate quantiles.
+5. LAG() and LEAD(): These functions are used to access values from previous or subsequent rows in the set. For example, if you have a set of values and you want to compare the value in each row to the value in the previous row, you could use the LAG() function to access the previous value.*/
+
+select *, rank() over (partition by customer_id order by sales) as customer_sales
+from customer
+order by customer_Id
+
+
+--- a better approach to windows function in SQL
+
+
+alter table customer
+add column department varchar(10)
+
+
+UPDATE customer
+SET department = 'HR'
+WHERE customer_id IN (1, 2, 5, 12, 14);
+
+UPDATE customer
+SET department = 'FIN'
+WHERE customer_id IN (3, 4, 10, 13, 15);
+
+UPDATE customer
+SET department = 'DA'
+WHERE customer_id IN (6, 7, 8, 9, 11);
+
+--
+
+select * from customer
+--
+--to check max salary
+
+select max(sales) as max_salary
+from customer
+
+-- to check department wise
+select department, max(sales) as max_salary
+from customer
+group by department
+
+
+-- but to extract all this and including all details of customer table is not possible without windows function
+
+/*step 1: define the abbreviation of the table name*/
+--
+select c.*
+
+from customer c
+---
+step 2
+-- insert the query to select department wise max sales
+
+select c.*,
+max(sales) over() as max_sales
+from customer c
+
+
+-- here the OVER funtion, enables sql to not treat the max as an aggregate function, but enables it to be treated like a windows function
+-- this is done via creating a window of record (for max sales)in the query
+-- i.e a new window of record called max_sales is created in the table
+
+--- to extract the max_sales by department, we use the clause partition
+-- unlike the previous result, here we can see the maximum sales department wise.
+
+
+select c.*,
+max(sales) over(partition by department) as max_sales
+from customer c
+
+
+
+------ SPECIFIC WINDOWS FUNCTION----
+-- 1. ROW NUMER, RANK, DENSE_RANK, LEAD AND LAG
+-- Row_number
+
+select c.*,
+row_number() over () as rn
+from customer c
+
+-- this arranges each row with a ranking number, irrespective of department
+-- to arrange by department
+select c.*,
+row_number() over (partition by department) as rn
+from customer c
+
+-- what is the use or row_number?
+-- eg. if i wanted to find the customer_id that joined first, assuming the customer_id is the joining date
+-- we can fix this by using the order by clause
+select c.*,
+row_number() over (partition by department order by customer_id) as rn
+from customer c
+
+-- what if i want to extract the frist two only?
+
+select * from(
+	select c.*,
+	row_number() over (partition by department order by customer_id) as rn
+	from customer c) x
+where x.rn <3
+
+-- let us break down this query,
+-- the subquery (x) is fectching all customer_id with sales, department wise__
+-- the outer query is then limitng the rn below 2
+
+----------------------------------------------------------
+--2. rank windows function
+
+-- to fetch top 3 person who obtain max sales in each department
+select c.*,
+rank() over (partition by department order by sales desc) as rnk
+from customer c
+
+-- to find 3 top salries
+select * from (
+select c.*,
+rank() over (partition by department order by sales desc) as rnk
+from customer c) b
+where b.rnk <4
+
+---------
+3. dense rank
+-- very similar to rank, 
+-- in rank, if two values are similiar  they will give the ranking, 1,2,2,4 (notice how 3 is skipped)
+-- in dense_rank it will give 1,2,2,3 (notice it goes to 3)
+
+
+select c.*,
+rank() over (partition by department order by sales desc) as rnk,
+dense_rank() over (partition by department order by sales desc) as dense_rank
+from customer c 
+-------------------------------------------------------------
+---- difference between row number, rank, dense_rank
+-- in rank, if two values are similiar  they will give the ranking, 1,2,2,4 (notice how 3 is skipped)
+-- in dense_rank it will give 1,2,2,3 (notice it goes to 3)
+-- row number will meanwhile give the number of the rows 
+select c.*,
+row_number () over (partition by department order by sales desc) as rwn,
+rank() over (partition by department order by sales desc) as rnk,
+dense_rank() over (partition by department order by sales desc) as dense_rank
+from customer c 
+
+-----------------------------------------
+
+lead and lag
+-- to check if the current sales is higher or lower than previosu sales
+
+select c.*,
+lag(sales) over (partition by department order by customer_id) as prev_sales
+from customer c
+-- this bascailly compares the sales to the next customer id as shown in the result
+
+
+---- similiarly lag will do the opposite
+select c.*,
+lead(sales) over (partition by department order by customer_id) as prev_sales
+from customer c
+
+
+-- to check if sales if higher or lower thanprevious employee
+
+select c.*,
+lag(sales) over (partition by department order by customer_id) as prev_sales,
+case when c.sales > lag(sales) over (partition by department order by customer_id) then 'higher than previous sales'
+when c.sales < lag(sales) over (partition by department order by customer_id) then 'lower than previous sales'
+when c.sales = lag(sales) over (partition by department order by customer_id) then 'same as than previous sales'
+end sales_range
+from customer c
+
+
+
